@@ -11,7 +11,6 @@ const Hero = () => {
           alt="Beautiful luxury rental house" 
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-background/50 backdrop-blur-[2px]" />
       </div>
       
       <div className="container mx-auto px-4 py-20">
@@ -25,12 +24,12 @@ const Hero = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/properties">
-              <Button size="lg" className="w-full sm:w-auto">
+              <Button size="lg" className="w-full sm:w-auto bg-primary hover:bg-primary/90">
                 Browse Properties
               </Button>
             </Link>
             <Link to="/auth">
-              <Button size="lg" className="w-full sm:w-auto bg-primary hover:bg-primary/90">
+              <Button size="lg" variant="outline" className="w-full sm:w-auto">
                 List Your Property
               </Button>
             </Link>
