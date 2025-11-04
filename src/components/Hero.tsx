@@ -13,13 +13,16 @@ const Hero = () => {
         />
       </div>
       
-      <div className="container mx-auto px-4 py-32">
-        <div className="max-w-4xl mx-auto text-center space-y-8 backdrop-blur-md bg-black/30 p-8 md:p-12 lg:p-16 rounded-3xl border border-white/20 shadow-2xl">
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight">
+      {/* Gradient blur overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-transparent backdrop-blur-sm"></div>
+      
+      <div className="container mx-auto px-4 py-32 relative z-10">
+        <div className="max-w-4xl mx-auto text-center space-y-8">
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight drop-shadow-2xl">
             Find Your Perfect
             <span className="block mt-2">Rental Home</span>
           </h1>
-          <p className="text-xl md:text-2xl text-white max-w-3xl mx-auto">
+          <p className="text-xl md:text-2xl text-white max-w-3xl mx-auto drop-shadow-lg">
             Connect directly with landlords and discover your ideal living space. Browse thousands of listings or list your property today.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
