@@ -19,9 +19,6 @@ const Navbar = () => {
             <Link to="/properties" className="text-foreground hover:text-primary transition-colors font-medium">
               Browse Properties
             </Link>
-            <Link to="/dashboard" className="text-foreground hover:text-primary transition-colors font-medium">
-              Dashboard
-            </Link>
           </div>
 
           <div className="flex items-center gap-3">

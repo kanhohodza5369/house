@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Home } from "lucide-react";
 import { Link } from "react-router-dom";
+import authBackground from "@/assets/auth-background.jpg";
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -80,26 +81,34 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-muted/30">
+    <div className="min-h-screen flex items-center justify-center p-4 relative">
+      <div className="absolute inset-0 -z-10">
+        <img 
+          src={authBackground} 
+          alt="Authentication background" 
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" />
+      </div>
+
       <div className="w-full max-w-md">
         <Link to="/" className="flex items-center justify-center gap-2 mb-8 text-2xl font-bold text-foreground hover:text-primary transition-colors">
           <Home className="h-8 w-8" />
-          <span>RentalHub</span>
         </Link>
 
-        <Card>
-          <CardHeader className="text-center">
-            <CardTitle>Welcome</CardTitle>
-            <CardDescription>Sign in or create an account to get started</CardDescription>
-          </CardHeader>
-          <CardContent>
+        <Card className="backdrop-blur-sm bg-card/95">
+          <CardContent className="pt-6">
             <Tabs defaultValue="signin" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
+              <TabsList className="grid w-full grid-cols-2 mb-6">
                 <TabsTrigger value="signin">Sign In</TabsTrigger>
                 <TabsTrigger value="signup">Sign Up</TabsTrigger>
               </TabsList>
 
-              <TabsContent value="signin">
+              <TabsContent value="signin" className="space-y-4">
+                <div className="text-center mb-6">
+                  <h2 className="text-2xl font-bold">Welcome Back</h2>
+                  <p className="text-muted-foreground text-sm mt-1">Sign in to your account</p>
+                </div>
                 <form onSubmit={handleSignIn} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="signin-email">Email</Label>
@@ -129,7 +138,11 @@ const Auth = () => {
                 </form>
               </TabsContent>
 
-              <TabsContent value="signup">
+              <TabsContent value="signup" className="space-y-4">
+                <div className="text-center mb-6">
+                  <h2 className="text-2xl font-bold">Create Account</h2>
+                  <p className="text-muted-foreground text-sm mt-1">Get started with your new account</p>
+                </div>
                 <form onSubmit={handleSignUp} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="fullname">Full Name</Label>
