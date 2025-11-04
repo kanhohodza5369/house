@@ -41,8 +41,11 @@ const Signup = () => {
       if (error) throw error;
 
       if (data.user) {
-        toast.success("Account created successfully!");
-        navigate("/auth");
+        toast.success("Account created successfully! Redirecting to dashboard...");
+        // Auto-login is enabled, so redirect to dashboard
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 1000);
       }
     } catch (error: any) {
       toast.error(error.message || "Error signing up");
