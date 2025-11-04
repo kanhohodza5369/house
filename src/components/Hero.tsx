@@ -4,7 +4,7 @@ import heroHouse from "@/assets/hero-house.jpg";
 
 const Hero = () => {
   return (
-    <section className="relative min-h-screen flex items-center">
+    <section className="relative min-h-screen flex items-center justify-center">
       <div className="absolute inset-0 -z-10">
         <img 
           src={heroHouse} 
@@ -16,7 +16,7 @@ const Hero = () => {
       {/* Gradient blur overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-transparent backdrop-blur-sm"></div>
       
-      <div className="container mx-auto px-4 py-32 relative z-10">
+      <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-4xl mx-auto text-center space-y-8">
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight drop-shadow-2xl">
             Find Your Perfect
