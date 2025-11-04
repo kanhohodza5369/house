@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,6 +14,16 @@ const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  // Check if user is already logged in
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        navigate("/");
+      }
+    };
+    checkUser();
+  }, [navigate]);
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,13 +61,13 @@ const Auth = () => {
         <Card className="backdrop-blur-2xl bg-white/10 border border-white/30 shadow-2xl">
           <CardContent className="pt-8 pb-8 px-8">
             <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-foreground">Welcome Back</h2>
-              <p className="text-muted-foreground text-sm mt-2">Sign in to your account</p>
+              <h2 className="text-3xl font-bold text-white">Welcome Back</h2>
+              <p className="text-white/80 text-sm mt-2">Sign in to your account</p>
             </div>
             
             <form onSubmit={handleSignIn} className="space-y-5">
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-sm font-medium">Email</Label>
+                <Label htmlFor="email" className="text-sm font-medium text-white">Email</Label>
                 <Input
                   id="email"
                   type="email"
@@ -65,11 +75,11 @@ const Auth = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="h-11"
+                  className="h-11 bg-white/20 border-white/30 text-white placeholder:text-white/60"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-sm font-medium">Password</Label>
+                <Label htmlFor="password" className="text-sm font-medium text-white">Password</Label>
                 <Input
                   id="password"
                   type="password"
@@ -77,7 +87,7 @@ const Auth = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="h-11"
+                  className="h-11 bg-white/20 border-white/30 text-white placeholder:text-white/60"
                 />
               </div>
               <Button type="submit" className="w-full h-11 bg-primary hover:bg-primary/90 text-base font-medium" disabled={loading}>
@@ -86,12 +96,12 @@ const Auth = () => {
             </form>
 
             <div className="mt-6 space-y-3 text-center text-sm">
-              <Link to="/forgot-password" className="text-primary hover:underline block">
+              <Link to="/forgot-password" className="text-white hover:underline block">
                 Forgot password?
               </Link>
-              <p className="text-muted-foreground">
+              <p className="text-white/80">
                 Don't have an account?{" "}
-                <Link to="/signup" className="text-primary hover:underline font-medium">
+                <Link to="/signup" className="text-white hover:underline font-medium">
                   Sign up
                 </Link>
               </p>
