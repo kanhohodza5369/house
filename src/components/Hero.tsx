@@ -14,7 +14,7 @@ const Hero = () => {
       </div>
       
       <div className="container mx-auto px-4 py-32">
-        <div className="max-w-4xl mx-auto text-center space-y-8">
+        <div className="max-w-4xl mx-auto text-center space-y-8 backdrop-blur-md bg-black/30 p-8 md:p-12 lg:p-16 rounded-3xl border border-white/20 shadow-2xl">
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight">
             Find Your Perfect
             <span className="block mt-2">Rental Home</span>
