@@ -92,14 +92,9 @@ const Navbar = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <>
-                <Link to="/auth">
-                  <Button variant="ghost">Sign In</Button>
-                </Link>
-                <Link to="/signup">
-                  <Button className="bg-primary hover:bg-primary/90">Get Started</Button>
-                </Link>
-              </>
+              <Link to="/signup">
+                <Button className="bg-primary hover:bg-primary/90">Get Started</Button>
+              </Link>
             )}
           </div>
         </div>
