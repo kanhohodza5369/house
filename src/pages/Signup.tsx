@@ -68,9 +68,29 @@ const Signup = () => {
       <div className="w-full max-w-md">
         <Card className="backdrop-blur-2xl bg-white/10 border border-white/30 shadow-2xl">
           <CardContent className="pt-8 pb-8 px-8">
-            <div className="text-center mb-8">
+            <div className="text-center mb-6">
               <h2 className="text-3xl font-bold text-white">Create Account</h2>
               <p className="text-white/80 text-sm mt-2">Join our rental community</p>
+            </div>
+
+            <div className="mb-6 text-center">
+              <p className="text-white/90 text-sm mb-3">
+                Already have an account?
+              </p>
+              <Link to="/auth">
+                <Button variant="outline" className="w-full bg-white/20 border-white/40 text-white hover:bg-white/30">
+                  Sign In Instead
+                </Button>
+              </Link>
+            </div>
+
+            <div className="relative mb-6">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t border-white/30" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-transparent px-2 text-white/70">Or create new account</span>
+              </div>
             </div>
             
             <form onSubmit={handleSignUp} className="space-y-5">
@@ -144,15 +164,6 @@ const Signup = () => {
                 {loading ? "Creating account..." : "Sign Up"}
               </Button>
             </form>
-
-            <div className="mt-6 text-center text-sm">
-              <p className="text-white/80">
-                Already have an account?{" "}
-                <Link to="/auth" className="text-white hover:underline font-medium">
-                  Sign in
-                </Link>
-              </p>
-            </div>
           </CardContent>
         </Card>
       </div>
