@@ -1,4 +1,6 @@
 
+-- Migration: 20251104083803
+
 -- Migration: 20251104081331
 
 -- Migration: 20251104075139
@@ -153,4 +155,5 @@ create trigger conversations_updated_at
 -- Enable realtime for messages
 alter publication supabase_realtime add table public.messages;
 alter table public.messages replica identity full;
+
 
