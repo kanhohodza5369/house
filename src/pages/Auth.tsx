@@ -44,11 +44,11 @@ const Auth = () => {
           alt="Authentication background" 
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-background/85 backdrop-blur-md" />
+        <div className="absolute inset-0 bg-background/40" />
       </div>
 
       <div className="w-full max-w-md">
-        <Card className="backdrop-blur-sm bg-card/95 border-2">
+        <Card className="backdrop-blur-xl bg-card/30 border border-white/20 shadow-2xl">
           <CardContent className="pt-8 pb-8 px-8">
             <div className="text-center mb-8">
               <h2 className="text-3xl font-bold text-foreground">Welcome Back</h2>
