@@ -8,7 +8,8 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { X } from "lucide-react";
+import { X, Upload, Image as ImageIcon } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
 
 const AddPropertyForm = ({ onSuccess }: { onSuccess?: () => void }) => {
   const navigate = useNavigate();
@@ -16,6 +17,9 @@ const AddPropertyForm = ({ onSuccess }: { onSuccess?: () => void }) => {
   const [loading, setLoading] = useState(false);
   const [amenities, setAmenities] = useState<string[]>([]);
   const [newAmenity, setNewAmenity] = useState("");
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const [available, setAvailable] = useState(true);
   
   const [formData, setFormData] = useState({
     title: "",
@@ -30,6 +34,36 @@ const AddPropertyForm = ({ onSuccess }: { onSuccess?: () => void }) => {
     bathrooms: "",
     square_feet: "",
   });
+
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    const validFiles = files.filter(file => file.type.startsWith('image/'));
+    
+    if (validFiles.length !== files.length) {
+      toast({
+        title: "Invalid files",
+        description: "Please select only image files",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setImageFiles(prev => [...prev, ...validFiles]);
+    
+    // Create previews
+    validFiles.forEach(file => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreviews(prev => [...prev, reader.result as string]);
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const removeImage = (index: number) => {
+    setImageFiles(prev => prev.filter((_, i) => i !== index));
+    setImagePreviews(prev => prev.filter((_, i) => i !== index));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,6 +82,25 @@ const AddPropertyForm = ({ onSuccess }: { onSuccess?: () => void }) => {
         return;
       }
 
+      // Upload images to storage
+      const imageUrls: string[] = [];
+      for (const file of imageFiles) {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${user.id}/${Date.now()}-${Math.random()}.${fileExt}`;
+        
+        const { error: uploadError, data } = await supabase.storage
+          .from('property-images')
+          .upload(fileName, file);
+
+        if (uploadError) throw uploadError;
+
+        const { data: { publicUrl } } = supabase.storage
+          .from('property-images')
+          .getPublicUrl(fileName);
+
+        imageUrls.push(publicUrl);
+      }
+
       const { error } = await (supabase as any).from("properties").insert({
         landlord_id: user.id,
         title: formData.title,
@@ -62,7 +115,8 @@ const AddPropertyForm = ({ onSuccess }: { onSuccess?: () => void }) => {
         bathrooms: formData.bathrooms ? parseInt(formData.bathrooms) : null,
         square_feet: formData.square_feet ? parseInt(formData.square_feet) : null,
         amenities: amenities,
-        available: true,
+        available: available,
+        images: imageUrls,
       });
 
       if (error) throw error;
@@ -269,6 +323,64 @@ const AddPropertyForm = ({ onSuccess }: { onSuccess?: () => void }) => {
                 ))}
               </div>
             )}
+          </div>
+
+          <div className="space-y-2">
+            <Label>Property Images</Label>
+            <div className="border-2 border-dashed border-border rounded-lg p-6 text-center">
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleImageSelect}
+                className="hidden"
+                id="property-images"
+              />
+              <label htmlFor="property-images" className="cursor-pointer">
+                <Upload className="h-12 w-12 mx-auto text-muted-foreground mb-2" />
+                <p className="text-sm text-muted-foreground">
+                  Click to upload property images
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  PNG, JPG, WEBP up to 10MB each
+                </p>
+              </label>
+            </div>
+            
+            {imagePreviews.length > 0 && (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+                {imagePreviews.map((preview, index) => (
+                  <div key={index} className="relative group">
+                    <img
+                      src={preview}
+                      alt={`Preview ${index + 1}`}
+                      className="w-full h-32 object-cover rounded-lg"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeImage(index)}
+                      className="absolute top-2 right-2 bg-destructive text-destructive-foreground p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="flex items-center justify-between p-4 border rounded-lg">
+            <div className="space-y-0.5">
+              <Label htmlFor="available" className="text-base">Property Availability</Label>
+              <p className="text-sm text-muted-foreground">
+                Is this property currently available for rent?
+              </p>
+            </div>
+            <Switch
+              id="available"
+              checked={available}
+              onCheckedChange={setAvailable}
+            />
           </div>
 
           <Button type="submit" className="w-full" disabled={loading}>
