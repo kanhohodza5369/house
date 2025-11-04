@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import authBackground from "@/assets/auth-background.jpg";
+import authBackground from "@/assets/auth-bg.jpg";
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -41,14 +41,14 @@ const Auth = () => {
       <div className="absolute inset-0 -z-10">
         <img 
           src={authBackground} 
-          alt="Authentication background" 
+          alt="Luxury property interior" 
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-background/40" />
+        <div className="absolute inset-0 bg-black/30" />
       </div>
 
       <div className="w-full max-w-md">
-        <Card className="backdrop-blur-xl bg-card/30 border border-white/20 shadow-2xl">
+        <Card className="backdrop-blur-2xl bg-white/10 border border-white/30 shadow-2xl">
           <CardContent className="pt-8 pb-8 px-8">
             <div className="text-center mb-8">
               <h2 className="text-3xl font-bold text-foreground">Welcome Back</h2>
