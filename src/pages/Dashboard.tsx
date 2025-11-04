@@ -29,7 +29,7 @@ const Dashboard = () => {
   const [profile, setProfile] = useState<any>(null);
   const [properties, setProperties] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showAddForm, setShowAddForm] = useState(false);
+  const [activeTab, setActiveTab] = useState("properties");
 
   useEffect(() => {
     checkAuth();
@@ -125,7 +125,7 @@ const Dashboard = () => {
         </div>
 
         {profile?.user_type === "landlord" ? (
-          <Tabs defaultValue="properties" className="space-y-6">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
             <TabsList>
               <TabsTrigger value="properties">My Properties</TabsTrigger>
               <TabsTrigger value="add">Add Property</TabsTrigger>
@@ -135,7 +135,7 @@ const Dashboard = () => {
             <TabsContent value="properties" className="space-y-6">
               <div className="flex items-center justify-between">
                 <h2 className="text-2xl font-semibold">Your Properties</h2>
-                <Button onClick={() => setShowAddForm(true)}>
+                <Button onClick={() => setActiveTab("add")}>
                   <Plus className="mr-2 h-4 w-4" />
                   Add Property
                 </Button>
@@ -147,7 +147,7 @@ const Dashboard = () => {
                     <p className="text-muted-foreground mb-4">
                       You haven't listed any properties yet.
                     </p>
-                    <Button onClick={() => setShowAddForm(true)}>
+                    <Button onClick={() => setActiveTab("add")}>
                       <Plus className="mr-2 h-4 w-4" />
                       Add Your First Property
                     </Button>
@@ -250,7 +250,7 @@ const Dashboard = () => {
 
             <TabsContent value="add">
               <AddPropertyForm onSuccess={() => {
-                setShowAddForm(false);
+                setActiveTab("properties");
                 fetchProperties(user.id);
               }} />
             </TabsContent>
