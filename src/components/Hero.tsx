@@ -15,11 +15,11 @@ const Hero = () => {
       
       <div className="container mx-auto px-4 py-20">
         <div className="max-w-3xl mx-auto text-center space-y-8">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
             Find Your Perfect
-            <span className="text-primary block mt-2">Rental Home</span>
+            <span className="block mt-2">Rental Home</span>
           </h1>
-          <p className="text-lg md:text-xl text-foreground/80 max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-white max-w-2xl mx-auto">
             Connect directly with landlords and discover your ideal living space. Browse thousands of listings or list your property today.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
