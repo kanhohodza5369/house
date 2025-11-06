@@ -7,8 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { MapPin, Bed, Bath, Square, Check, ArrowLeft, MessageSquare, MessageCircle, Phone } from "lucide-react";
+import { MapPin, Bed, Bath, Square, Check, ArrowLeft, MessageCircle, Phone } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const PropertyDetail = () => {
@@ -19,7 +18,6 @@ const PropertyDetail = () => {
   const [landlord, setLandlord] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
-  const [contactDialogOpen, setContactDialogOpen] = useState(false);
 
   useEffect(() => {
     checkUser();
@@ -77,77 +75,6 @@ const PropertyDetail = () => {
     const phoneNumber = landlord.phone.replace(/[\+\s]/g, '');
     const whatsappUrl = `https://wa.me/${phoneNumber}`;
     window.open(whatsappUrl, '_blank');
-    setContactDialogOpen(false);
-  };
-
-  const handleMessengerContact = () => {
-    if (!landlord?.phone) {
-      toast({
-        title: "Phone number not available",
-        description: "Landlord's phone number is not available for Messenger contact",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Remove + and spaces from phone number
-    const phoneNumber = landlord.phone.replace(/[\+\s]/g, '');
-    const messengerUrl = `https://m.me/+${phoneNumber}`;
-    window.open(messengerUrl, '_blank');
-    setContactDialogOpen(false);
-  };
-
-  const handleInAppContact = async () => {
-    if (!user) {
-      toast({
-        title: "Sign in required",
-        description: "Please sign in to contact the landlord",
-        variant: "destructive",
-      });
-      navigate("/auth");
-      return;
-    }
-
-    try {
-      // Check if conversation already exists
-      const { data: existingConv } = await (supabase as any)
-        .from("conversations")
-        .select("id")
-        .eq("property_id", property.id)
-        .eq("tenant_id", user.id)
-        .eq("landlord_id", property.landlord_id)
-        .single();
-
-      if (existingConv && (existingConv as any).id) {
-        navigate(`/messages/${(existingConv as any).id}`);
-        setContactDialogOpen(false);
-        return;
-      }
-
-      // Create new conversation
-      const { data: newConv, error } = await (supabase as any)
-        .from("conversations")
-        .insert({
-          property_id: property.id,
-          tenant_id: user.id,
-          landlord_id: property.landlord_id,
-        })
-        .select()
-        .single();
-
-      if (error) throw error;
-
-      if (newConv && (newConv as any).id) {
-        navigate(`/messages/${(newConv as any).id}`);
-        setContactDialogOpen(false);
-      }
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
-    }
   };
 
   if (loading) {
@@ -281,49 +208,15 @@ const PropertyDetail = () => {
                   <span className="text-lg text-muted-foreground font-normal">/month</span>
                 </div>
 
-                <Dialog open={contactDialogOpen} onOpenChange={setContactDialogOpen}>
-                  <DialogTrigger asChild>
-                    <Button
-                      className="w-full mb-4"
-                      size="lg"
-                      disabled={user?.id === property.landlord_id}
-                    >
-                      <MessageSquare className="mr-2 h-5 w-5" />
-                      Contact Landlord
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="sm:max-w-md">
-                    <DialogHeader>
-                      <DialogTitle>Contact Landlord</DialogTitle>
-                    </DialogHeader>
-                    <div className="space-y-4">
-                      <Button
-                        onClick={handleWhatsAppContact}
-                        className="w-full"
-                        variant="outline"
-                      >
-                        <MessageCircle className="mr-2 h-5 w-5" />
-                        WhatsApp
-                      </Button>
-                      <Button
-                        onClick={handleMessengerContact}
-                        className="w-full"
-                        variant="outline"
-                      >
-                        <Phone className="mr-2 h-5 w-5" />
-                        Messenger
-                      </Button>
-                      <Button
-                        onClick={handleInAppContact}
-                        className="w-full"
-                        variant="outline"
-                      >
-                        <MessageSquare className="mr-2 h-5 w-5" />
-                        In-App Chat
-                      </Button>
-                    </div>
-                  </DialogContent>
-                </Dialog>
+                <Button
+                  onClick={handleWhatsAppContact}
+                  className="w-full mb-4"
+                  size="lg"
+                  disabled={user?.id === property.landlord_id}
+                >
+                  <MessageCircle className="mr-2 h-5 w-5" />
+                  Contact Landlord via WhatsApp
+                </Button>
 
                 {landlord && (
                   <div className="pt-4 border-t">
