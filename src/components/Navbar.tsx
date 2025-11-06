@@ -57,57 +57,59 @@ const Navbar = () => {
           </Link>
           
           <div className="hidden md:flex items-center gap-6">
-            <DropdownMenu>
-              <DropdownMenuTrigger className="text-foreground hover:text-primary transition-colors font-medium flex items-center gap-1">
-                Properties <ChevronDown className="h-4 w-4" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-80 bg-background border-border z-50">
-                <Link to="/properties?type=apartments">
-                  <DropdownMenuItem className="p-4 cursor-pointer hover:bg-accent">
-                    <div className="flex items-center gap-4">
-                      <img src={apartmentsIcon} alt="Apartments" className="w-16 h-16 object-cover rounded-md" />
-                      <div>
-                        <div className="font-semibold text-foreground">Apartments</div>
-                        <div className="text-sm text-muted-foreground">Find your perfect apartment in the city</div>
+            {user && (
+              <DropdownMenu>
+                <DropdownMenuTrigger className="text-foreground hover:text-primary transition-colors font-medium flex items-center gap-1">
+                  Properties <ChevronDown className="h-4 w-4" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-80 bg-background border-border z-50">
+                  <Link to="/properties?type=apartments">
+                    <DropdownMenuItem className="p-4 cursor-pointer hover:bg-accent">
+                      <div className="flex items-center gap-4">
+                        <img src={apartmentsIcon} alt="Apartments" className="w-16 h-16 object-cover rounded-md" />
+                        <div>
+                          <div className="font-semibold text-foreground">Apartments</div>
+                          <div className="text-sm text-muted-foreground">Find your perfect apartment in the city</div>
+                        </div>
                       </div>
-                    </div>
-                  </DropdownMenuItem>
-                </Link>
-                <Link to="/properties?type=houses">
-                  <DropdownMenuItem className="p-4 cursor-pointer hover:bg-accent">
-                    <div className="flex items-center gap-4">
-                      <img src={housesIcon} alt="Houses" className="w-16 h-16 object-cover rounded-md" />
-                      <div>
-                        <div className="font-semibold text-foreground">Houses</div>
-                        <div className="text-sm text-muted-foreground">Browse spacious houses for families</div>
+                    </DropdownMenuItem>
+                  </Link>
+                  <Link to="/properties?type=houses">
+                    <DropdownMenuItem className="p-4 cursor-pointer hover:bg-accent">
+                      <div className="flex items-center gap-4">
+                        <img src={housesIcon} alt="Houses" className="w-16 h-16 object-cover rounded-md" />
+                        <div>
+                          <div className="font-semibold text-foreground">Houses</div>
+                          <div className="text-sm text-muted-foreground">Browse spacious houses for families</div>
+                        </div>
                       </div>
-                    </div>
-                  </DropdownMenuItem>
-                </Link>
-                <Link to="/properties?type=rooms">
-                  <DropdownMenuItem className="p-4 cursor-pointer hover:bg-accent">
-                    <div className="flex items-center gap-4">
-                      <img src={roomsIcon} alt="Rooms" className="w-16 h-16 object-cover rounded-md" />
-                      <div>
-                        <div className="font-semibold text-foreground">Rooms</div>
-                        <div className="text-sm text-muted-foreground">Affordable single rooms for rent</div>
+                    </DropdownMenuItem>
+                  </Link>
+                  <Link to="/properties?type=rooms">
+                    <DropdownMenuItem className="p-4 cursor-pointer hover:bg-accent">
+                      <div className="flex items-center gap-4">
+                        <img src={roomsIcon} alt="Rooms" className="w-16 h-16 object-cover rounded-md" />
+                        <div>
+                          <div className="font-semibold text-foreground">Rooms</div>
+                          <div className="text-sm text-muted-foreground">Affordable single rooms for rent</div>
+                        </div>
                       </div>
-                    </div>
-                  </DropdownMenuItem>
-                </Link>
-                <Link to="/properties?type=shared">
-                  <DropdownMenuItem className="p-4 cursor-pointer hover:bg-accent">
-                    <div className="flex items-center gap-4">
-                      <img src={sharedIcon} alt="Shared Spaces" className="w-16 h-16 object-cover rounded-md" />
-                      <div>
-                        <div className="font-semibold text-foreground">Shared Spaces</div>
-                        <div className="text-sm text-muted-foreground">Co-living spaces and shared rentals</div>
+                    </DropdownMenuItem>
+                  </Link>
+                  <Link to="/properties?type=shared">
+                    <DropdownMenuItem className="p-4 cursor-pointer hover:bg-accent">
+                      <div className="flex items-center gap-4">
+                        <img src={sharedIcon} alt="Shared Spaces" className="w-16 h-16 object-cover rounded-md" />
+                        <div>
+                          <div className="font-semibold text-foreground">Shared Spaces</div>
+                          <div className="text-sm text-muted-foreground">Co-living spaces and shared rentals</div>
+                        </div>
                       </div>
-                    </div>
-                  </DropdownMenuItem>
-                </Link>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                    </DropdownMenuItem>
+                  </Link>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
             <Link to="/about" className="text-foreground hover:text-primary transition-colors font-medium">
               About
             </Link>

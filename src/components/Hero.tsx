@@ -1,8 +1,20 @@
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
 import heroHouse from "@/assets/hero-house.jpg";
 
 const Hero = () => {
+  const navigate = useNavigate();
+
+  const handleGetStarted = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
+      navigate('/dashboard');
+    } else {
+      navigate('/auth');
+    }
+  };
+
   return (
     <section className="relative min-h-screen flex items-center justify-center">
       <div className="absolute inset-0 -z-10">
@@ -25,17 +37,10 @@ const Hero = () => {
           <p className="text-xl md:text-2xl text-white max-w-3xl mx-auto drop-shadow-lg">
             Connect directly with landlords and discover your ideal living space. Browse thousands of listings or list your property today.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-            <Link to="/properties">
-              <Button size="lg" className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-lg px-8 py-6">
-                Browse Properties
-              </Button>
-            </Link>
-            <Link to="/auth">
-              <Button size="lg" variant="outline" className="w-full sm:w-auto text-white border-white hover:bg-white hover:text-primary text-lg px-8 py-6">
-                List Your Property
-              </Button>
-            </Link>
+          <div className="flex justify-center pt-4">
+            <Button size="lg" className="bg-primary hover:bg-primary/90 text-lg px-8 py-6" onClick={handleGetStarted}>
+              Get Started
+            </Button>
           </div>
         </div>
       </div>

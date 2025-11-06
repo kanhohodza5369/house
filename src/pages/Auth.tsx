@@ -58,16 +58,16 @@ const Auth = () => {
       </div>
 
       <div className="w-full max-w-md">
-        <Card className="backdrop-blur-2xl bg-white/10 border border-white/30 shadow-2xl">
+        <Card className="bg-white border shadow-2xl">
           <CardContent className="pt-8 pb-8 px-8">
             <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-white">Welcome Back</h2>
-              <p className="text-white/80 text-sm mt-2">Sign in to your account</p>
+              <h2 className="text-3xl font-bold text-gray-900">Welcome Back</h2>
+              <p className="text-gray-600 text-sm mt-2">Sign in to your account</p>
             </div>
-            
+
             <form onSubmit={handleSignIn} className="space-y-5">
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-sm font-medium text-white">Email</Label>
+                <Label htmlFor="email" className="text-sm font-medium">Email</Label>
                 <Input
                   id="email"
                   type="email"
@@ -75,11 +75,11 @@ const Auth = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="h-11 bg-white/20 border-white/30 text-white placeholder:text-white/60"
+                  className="h-11"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-sm font-medium text-white">Password</Label>
+                <Label htmlFor="password" className="text-sm font-medium">Password</Label>
                 <Input
                   id="password"
                   type="password"
@@ -87,7 +87,7 @@ const Auth = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="h-11 bg-white/20 border-white/30 text-white placeholder:text-white/60"
+                  className="h-11"
                 />
               </div>
               <Button type="submit" className="w-full h-11 bg-primary hover:bg-primary/90 text-base font-medium" disabled={loading}>
@@ -96,12 +96,12 @@ const Auth = () => {
             </form>
 
             <div className="mt-6 space-y-3 text-center text-sm">
-              <Link to="/forgot-password" className="text-white hover:underline block">
+              <Link to="/forgot-password" className="text-gray-900 hover:underline block">
                 Forgot password?
               </Link>
-              <p className="text-white/80">
+              <p className="text-gray-600">
                 Don't have an account?{" "}
-                <Link to="/signup" className="text-white hover:underline font-medium">
+                <Link to="/signup" className="text-gray-900 hover:underline font-medium">
                   Sign up
                 </Link>
               </p>

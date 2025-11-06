@@ -1,3 +1,4 @@
+-- language: postgresql
 
 -- Migration: 20251104091044
 

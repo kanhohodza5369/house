@@ -66,36 +66,15 @@ const Signup = () => {
       </div>
 
       <div className="w-full max-w-md">
-        <Card className="backdrop-blur-2xl bg-white/10 border border-white/30 shadow-2xl">
+        <Card className="bg-white border shadow-2xl">
           <CardContent className="pt-8 pb-8 px-8">
             <div className="text-center mb-6">
-              <h2 className="text-3xl font-bold text-white">Create Account</h2>
-              <p className="text-white/80 text-sm mt-2">Join our rental community</p>
-            </div>
-
-            <div className="mb-6 text-center">
-              <p className="text-white/90 text-sm mb-3">
-                Already have an account?
-              </p>
-              <Link to="/auth">
-                <Button variant="outline" className="w-full bg-white/20 border-white/40 text-white hover:bg-white/30">
-                  Sign In Instead
-                </Button>
-              </Link>
-            </div>
-
-            <div className="relative mb-6">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-white/30" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-transparent px-2 text-white/70">Or create new account</span>
-              </div>
+              <h2 className="text-3xl font-bold text-gray-900">Create Account</h2>
             </div>
             
             <form onSubmit={handleSignUp} className="space-y-5">
               <div className="space-y-2">
-                <Label htmlFor="fullName" className="text-sm font-medium text-white">Full Name</Label>
+                <Label htmlFor="fullName" className="text-sm font-medium">Full Name</Label>
                 <Input
                   id="fullName"
                   type="text"
@@ -103,12 +82,12 @@ const Signup = () => {
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   required
-                  className="h-11 bg-white/20 border-white/30 text-white placeholder:text-white/60"
+                  className="h-11"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-sm font-medium text-white">Email</Label>
+                <Label htmlFor="email" className="text-sm font-medium">Email</Label>
                 <Input
                   id="email"
                   type="email"
@@ -116,24 +95,24 @@ const Signup = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="h-11 bg-white/20 border-white/30 text-white placeholder:text-white/60"
+                  className="h-11"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="phone" className="text-sm font-medium text-white">Phone</Label>
+                <Label htmlFor="phone" className="text-sm font-medium">Phone</Label>
                 <Input
                   id="phone"
                   type="tel"
                   placeholder="+1 (555) 000-0000"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className="h-11 bg-white/20 border-white/30 text-white placeholder:text-white/60"
+                  className="h-11"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-sm font-medium text-white">Password</Label>
+                <Label htmlFor="password" className="text-sm font-medium">Password</Label>
                 <Input
                   id="password"
                   type="password"
@@ -142,20 +121,20 @@ const Signup = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   minLength={6}
-                  className="h-11 bg-white/20 border-white/30 text-white placeholder:text-white/60"
+                  className="h-11"
                 />
               </div>
 
               <div className="space-y-3">
-                <Label className="text-sm font-medium text-white">I am a</Label>
+                <Label className="text-sm font-medium">I am a</Label>
                 <RadioGroup value={userType} onValueChange={(value: any) => setUserType(value)}>
-                  <div className="flex items-center space-x-2 bg-white/10 p-3 rounded-lg">
-                    <RadioGroupItem value="tenant" id="tenant" className="border-white text-white" />
-                    <Label htmlFor="tenant" className="text-white cursor-pointer flex-1">Tenant - Looking for property</Label>
+                  <div className="flex items-center space-x-2 bg-white p-3 rounded-lg">
+                    <RadioGroupItem value="tenant" id="tenant" />
+                    <Label htmlFor="tenant" className="cursor-pointer flex-1">Tenant - Looking for property</Label>
                   </div>
-                  <div className="flex items-center space-x-2 bg-white/10 p-3 rounded-lg">
-                    <RadioGroupItem value="landlord" id="landlord" className="border-white text-white" />
-                    <Label htmlFor="landlord" className="text-white cursor-pointer flex-1">Landlord - Listing property</Label>
+                  <div className="flex items-center space-x-2 bg-white p-3 rounded-lg">
+                    <RadioGroupItem value="landlord" id="landlord" />
+                    <Label htmlFor="landlord" className="cursor-pointer flex-1">Landlord - Listing property</Label>
                   </div>
                 </RadioGroup>
               </div>
@@ -164,6 +143,24 @@ const Signup = () => {
                 {loading ? "Creating account..." : "Sign Up"}
               </Button>
             </form>
+
+            <div className="mt-6 text-center text-sm">
+              <p className="text-gray-600">
+                Already have an account?{" "}
+                <Link to="/auth" className="text-gray-900 hover:underline font-medium">
+                  Sign In Instead
+                </Link>
+              </p>
+            </div>
+
+            <div className="relative mt-6">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t border-gray-300" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-white px-2 text-gray-500">Or create new account</span>
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>
