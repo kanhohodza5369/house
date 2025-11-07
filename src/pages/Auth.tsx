@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import authBackground from "@/assets/auth-bg.jpg";
@@ -13,6 +14,7 @@ const Auth = () => {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [acceptTerms, setAcceptTerms] = useState(false);
 
   // Check if user is already logged in
   useEffect(() => {
@@ -27,6 +29,12 @@ const Auth = () => {
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!acceptTerms) {
+      toast.error("Please accept the Terms and Conditions to continue");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -90,6 +98,20 @@ const Auth = () => {
                   className="h-11"
                 />
               </div>
+              <div className="flex items-center space-x-2 mt-4">
+                <Checkbox
+                  id="terms"
+                  checked={acceptTerms}
+                  onCheckedChange={(checked) => setAcceptTerms(checked as boolean)}
+                />
+                <Label htmlFor="terms" className="text-sm text-gray-600 cursor-pointer">
+                  I agree to the{" "}
+                  <Link to="/terms" className="text-primary hover:underline">
+                    Terms and Conditions
+                  </Link>
+                </Label>
+              </div>
+
               <Button type="submit" className="w-full h-11 bg-primary hover:bg-primary/90 text-base font-medium" disabled={loading}>
                 {loading ? "Signing in..." : "Sign In"}
               </Button>

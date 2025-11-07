@@ -67,11 +67,22 @@ const AddPropertyForm = ({ onSuccess }: { onSuccess?: () => void }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validate minimum 3 images
+    if (imageFiles.length < 3) {
+      toast({
+        title: "Minimum images required",
+        description: "Please upload at least 3 images of your property",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setLoading(true);
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      
+
       if (!user) {
         toast({
           title: "Authentication required",
@@ -87,7 +98,7 @@ const AddPropertyForm = ({ onSuccess }: { onSuccess?: () => void }) => {
       for (const file of imageFiles) {
         const fileExt = file.name.split('.').pop();
         const fileName = `${user.id}/${Date.now()}-${Math.random()}.${fileExt}`;
-        
+
         const { error: uploadError, data } = await supabase.storage
           .from('property-images')
           .upload(fileName, file);
@@ -184,8 +195,8 @@ const AddPropertyForm = ({ onSuccess }: { onSuccess?: () => void }) => {
                 <SelectContent>
                   <SelectItem value="apartment">Apartment</SelectItem>
                   <SelectItem value="house">House</SelectItem>
-                  <SelectItem value="condo">Condo</SelectItem>
-                  <SelectItem value="studio">Studio</SelectItem>
+                  <SelectItem value="shared">Shared Space</SelectItem>
+                  <SelectItem value="room">Room</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -339,7 +350,7 @@ const AddPropertyForm = ({ onSuccess }: { onSuccess?: () => void }) => {
               <label htmlFor="property-images" className="cursor-pointer">
                 <Upload className="h-12 w-12 mx-auto text-muted-foreground mb-2" />
                 <p className="text-sm text-muted-foreground">
-                  Click to upload property images
+                  Click to upload property images (minimum 3 required)
                 </p>
                 <p className="text-xs text-muted-foreground mt-1">
                   PNG, JPG, WEBP up to 10MB each

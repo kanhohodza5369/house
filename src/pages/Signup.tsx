@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import authBackground from "@/assets/auth-bg.jpg";
@@ -17,14 +18,21 @@ const Signup = () => {
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
   const [userType, setUserType] = useState<"tenant" | "landlord">("tenant");
+  const [acceptTerms, setAcceptTerms] = useState(false);
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!acceptTerms) {
+      toast.error("Please accept the Terms and Conditions to continue");
+      return;
+    }
+
     setLoading(true);
 
     try {
       const redirectUrl = `${window.location.origin}/`;
-      
+
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -137,6 +145,20 @@ const Signup = () => {
                     <Label htmlFor="landlord" className="cursor-pointer flex-1">Landlord - Listing property</Label>
                   </div>
                 </RadioGroup>
+              </div>
+
+              <div className="flex items-center space-x-2 mt-4">
+                <Checkbox
+                  id="terms"
+                  checked={acceptTerms}
+                  onCheckedChange={(checked) => setAcceptTerms(checked as boolean)}
+                />
+                <Label htmlFor="terms" className="text-sm text-gray-600 cursor-pointer">
+                  I agree to the{" "}
+                  <Link to="/terms" className="text-primary hover:underline">
+                    Terms and Conditions
+                  </Link>
+                </Label>
               </div>
 
               <Button type="submit" className="w-full h-11 bg-primary hover:bg-primary/90 text-base font-medium" disabled={loading}>
