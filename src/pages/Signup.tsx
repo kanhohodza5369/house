@@ -147,11 +147,12 @@ const Signup = () => {
                 </RadioGroup>
               </div>
 
-              <div className="flex items-center space-x-2 mt-4">
+              <div className="flex items-start space-x-2">
                 <Checkbox
                   id="terms"
                   checked={acceptTerms}
                   onCheckedChange={(checked) => setAcceptTerms(checked as boolean)}
+                  className="mt-0.5"
                 />
                 <Label htmlFor="terms" className="text-sm text-gray-600 cursor-pointer">
                   I agree to the{" "}

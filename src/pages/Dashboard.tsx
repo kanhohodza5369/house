@@ -8,8 +8,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, MapPin, Bed, Bath, Square, Edit, Trash2, Eye, Heart, Home } from "lucide-react";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, AreaChart, Area, PieChart, Pie, Cell } from "recharts";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -104,6 +106,11 @@ const Dashboard = () => {
 
       if (viewsError || interestError) {
         console.log("Analytics fetch error:", viewsError || interestError);
+        setAnalytics({
+          totalViews: 0,
+          totalInterest: 0,
+          propertyStats: {},
+        });
         return;
       }
 
@@ -111,14 +118,21 @@ const Dashboard = () => {
       const totalViews = viewsData?.length || 0;
       const totalInterest = interestData?.length || 0;
 
-      // Group by property
+      // Group by property from the fetched data
       const propertyStats = {};
-      properties.forEach(property => {
-        const propertyViews = viewsData?.filter(v => v.property_id === property.id).length || 0;
-        const propertyInterest = interestData?.filter(i => i.property_id === property.id).length || 0;
+      const allPropertyIds = new Set([
+        ...viewsData.map(v => v.property_id),
+        ...interestData.map(i => i.property_id)
+      ]);
 
-        propertyStats[property.id] = {
-          title: property.title,
+      allPropertyIds.forEach(propertyId => {
+        const propertyViews = viewsData?.filter(v => v.property_id === propertyId).length || 0;
+        const propertyInterest = interestData?.filter(i => i.property_id === propertyId).length || 0;
+        const title = viewsData.find(v => v.property_id === propertyId)?.properties?.title ||
+                      interestData.find(i => i.property_id === propertyId)?.properties?.title || 'Unknown Property';
+
+        propertyStats[propertyId] = {
+          title,
           views: propertyViews,
           interest: propertyInterest,
         };
@@ -131,6 +145,11 @@ const Dashboard = () => {
       });
     } catch (error) {
       console.log("Analytics error:", error);
+      setAnalytics({
+        totalViews: 0,
+        totalInterest: 0,
+        propertyStats: {},
+      });
     }
   };
 
@@ -181,11 +200,13 @@ const Dashboard = () => {
 
         {profile?.user_type === "landlord" ? (
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <TabsList>
-              <TabsTrigger value="properties">My Properties</TabsTrigger>
-              <TabsTrigger value="analytics">Analytics</TabsTrigger>
-              <TabsTrigger value="add">Add Property</TabsTrigger>
-            </TabsList>
+            <div className="bg-blue-50 rounded-lg w-full">
+              <TabsList className="grid w-full grid-cols-3 h-12 gap-2">
+                <TabsTrigger value="properties" className="data-[state=active]:bg-blue-400 data-[state=active]:text-white text-base py-3 text-center">My Properties</TabsTrigger>
+                <TabsTrigger value="analytics" className="data-[state=active]:bg-blue-400 data-[state=active]:text-white text-base py-3 text-center">Analytics</TabsTrigger>
+                <TabsTrigger value="add" className="data-[state=active]:bg-blue-400 data-[state=active]:text-white text-base py-3 text-center">Add Property</TabsTrigger>
+              </TabsList>
+            </div>
 
             <TabsContent value="properties" className="space-y-6">
               <div className="flex items-center justify-between">
@@ -315,42 +336,27 @@ const Dashboard = () => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                   <Card>
                     <CardContent className="p-6">
-                      <div className="flex items-center">
-                        <div className="p-2 bg-blue-100 rounded-lg">
-                          <Eye className="h-6 w-6 text-blue-600" />
-                        </div>
-                        <div className="ml-4">
-                          <p className="text-sm font-medium text-muted-foreground">Total Views</p>
-                          <p className="text-2xl font-bold">{analytics.totalViews}</p>
-                        </div>
+                      <div className="text-center">
+                        <p className="text-sm font-medium text-muted-foreground">Total Views</p>
+                        <p className="text-2xl font-bold">{analytics.totalViews}</p>
                       </div>
                     </CardContent>
                   </Card>
 
                   <Card>
                     <CardContent className="p-6">
-                      <div className="flex items-center">
-                        <div className="p-2 bg-green-100 rounded-lg">
-                          <Heart className="h-6 w-6 text-green-600" />
-                        </div>
-                        <div className="ml-4">
-                          <p className="text-sm font-medium text-muted-foreground">Total Interest</p>
-                          <p className="text-2xl font-bold">{analytics.totalInterest}</p>
-                        </div>
+                      <div className="text-center">
+                        <p className="text-sm font-medium text-muted-foreground">Total Interest</p>
+                        <p className="text-2xl font-bold">{analytics.totalInterest}</p>
                       </div>
                     </CardContent>
                   </Card>
 
                   <Card>
                     <CardContent className="p-6">
-                      <div className="flex items-center">
-                        <div className="p-2 bg-purple-100 rounded-lg">
-                          <Home className="h-6 w-6 text-purple-600" />
-                        </div>
-                        <div className="ml-4">
-                          <p className="text-sm font-medium text-muted-foreground">Properties</p>
-                          <p className="text-2xl font-bold">{properties.length}</p>
-                        </div>
+                      <div className="text-center">
+                        <p className="text-sm font-medium text-muted-foreground">Properties</p>
+                        <p className="text-2xl font-bold">{properties.length}</p>
                       </div>
                     </CardContent>
                   </Card>
@@ -364,32 +370,205 @@ const Dashboard = () => {
               )}
 
               {analytics && Object.keys(analytics.propertyStats).length > 0 && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Property Performance</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      {Object.entries(analytics.propertyStats).map(([propertyId, stats]: [string, any]) => (
-                        <div key={propertyId} className="flex items-center justify-between p-4 border rounded-lg">
-                          <div className="flex-1">
-                            <h4 className="font-medium">{stats.title}</h4>
-                            <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
-                              <span className="flex items-center gap-1">
-                                <Eye className="h-4 w-4" />
-                                {stats.views} views
-                              </span>
-                              <span className="flex items-center gap-1">
-                                <Heart className="h-4 w-4" />
-                                {stats.interest} interested
-                              </span>
+                <>
+                  {/* Analytics Overview Cards */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <Card>
+                      <CardContent className="p-6">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-sm font-medium text-muted-foreground">Total Properties</p>
+                            <p className="text-3xl font-bold">{properties.length}</p>
+                          </div>
+                          <Home className="h-8 w-8 text-blue-600" />
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardContent className="p-6">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-sm font-medium text-muted-foreground">Total Views</p>
+                            <p className="text-3xl font-bold">{analytics.totalViews}</p>
+                          </div>
+                          <Eye className="h-8 w-8 text-green-600" />
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardContent className="p-6">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-sm font-medium text-muted-foreground">Total Interest</p>
+                            <p className="text-3xl font-bold">{analytics.totalInterest}</p>
+                          </div>
+                          <Heart className="h-8 w-8 text-red-600" />
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardContent className="p-6">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-sm font-medium text-muted-foreground">Avg. Views/Property</p>
+                            <p className="text-3xl font-bold">
+                              {properties.length > 0 ? Math.round(analytics.totalViews / properties.length) : 0}
+                            </p>
+                          </div>
+                          <Eye className="h-8 w-8 text-purple-600" />
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  {/* Charts Section */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                    {/* Property Performance Bar Chart */}
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>Property Performance</CardTitle>
+                        <p className="text-sm text-muted-foreground">Views and interest by property</p>
+                      </CardHeader>
+                      <CardContent>
+                        <ChartContainer
+                          config={{
+                            views: {
+                              label: "Views",
+                              color: "hsl(var(--chart-1))",
+                            },
+                            interest: {
+                              label: "Interest",
+                              color: "hsl(var(--chart-2))",
+                            },
+                          }}
+                          className="h-[300px]"
+                        >
+                          <BarChart data={Object.entries(analytics.propertyStats).map(([propertyId, stats]: [string, any]) => ({
+                            name: stats.title.length > 15 ? stats.title.substring(0, 15) + '...' : stats.title,
+                            views: stats.views,
+                            interest: stats.interest,
+                          }))}>
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis dataKey="name" angle={-45} textAnchor="end" height={80} />
+                            <YAxis />
+                            <ChartTooltip content={<ChartTooltipContent />} />
+                            <Bar dataKey="views" fill="var(--color-views)" radius={[4, 4, 0, 0]} />
+                            <Bar dataKey="interest" fill="var(--color-interest)" radius={[4, 4, 0, 0]} />
+                          </BarChart>
+                        </ChartContainer>
+                      </CardContent>
+                    </Card>
+
+                    {/* Property Distribution Pie Chart */}
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>Property Distribution</CardTitle>
+                        <p className="text-sm text-muted-foreground">Views distribution across properties</p>
+                      </CardHeader>
+                      <CardContent>
+                        <ChartContainer
+                          config={{
+                            views: {
+                              label: "Views",
+                            },
+                          }}
+                          className="h-[300px]"
+                        >
+                          <PieChart>
+                            <Pie
+                              data={Object.entries(analytics.propertyStats).map(([propertyId, stats]: [string, any]) => ({
+                                name: stats.title.length > 20 ? stats.title.substring(0, 20) + '...' : stats.title,
+                                value: stats.views,
+                              }))}
+                              cx="50%"
+                              cy="50%"
+                              outerRadius={80}
+                              fill="#8884d8"
+                              dataKey="value"
+                              label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                            >
+                              {Object.entries(analytics.propertyStats).map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={`hsl(${index * 45}, 70%, 50%)`} />
+                              ))}
+                            </Pie>
+                            <ChartTooltip content={<ChartTooltipContent />} />
+                          </PieChart>
+                        </ChartContainer>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  {/* Trend Chart */}
+                  <Card className="mb-8">
+                    <CardHeader>
+                      <CardTitle>Engagement Trend</CardTitle>
+                      <p className="text-sm text-muted-foreground">Views and interest over time</p>
+                    </CardHeader>
+                    <CardContent>
+                      <ChartContainer
+                        config={{
+                          views: {
+                            label: "Views",
+                            color: "hsl(var(--chart-1))",
+                          },
+                          interest: {
+                            label: "Interest",
+                            color: "hsl(var(--chart-2))",
+                          },
+                        }}
+                        className="h-[300px]"
+                      >
+                        <AreaChart data={Object.entries(analytics.propertyStats).map(([propertyId, stats]: [string, any]) => ({
+                          name: stats.title.length > 15 ? stats.title.substring(0, 15) + '...' : stats.title,
+                          views: stats.views,
+                          interest: stats.interest,
+                        }))}>
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis dataKey="name" angle={-45} textAnchor="end" height={80} />
+                          <YAxis />
+                          <ChartTooltip content={<ChartTooltipContent />} />
+                          <Area type="monotone" dataKey="views" stackId="1" stroke="var(--color-views)" fill="var(--color-views)" fillOpacity={0.6} />
+                          <Area type="monotone" dataKey="interest" stackId="1" stroke="var(--color-interest)" fill="var(--color-interest)" fillOpacity={0.6} />
+                        </AreaChart>
+                      </ChartContainer>
+                    </CardContent>
+                  </Card>
+
+                  {/* Detailed Property List */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Detailed Property Analytics</CardTitle>
+                      <p className="text-sm text-muted-foreground">Individual property performance metrics</p>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        {Object.entries(analytics.propertyStats).map(([propertyId, stats]: [string, any]) => (
+                          <div key={propertyId} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                            <div className="flex-1">
+                              <h4 className="font-medium">{stats.title}</h4>
+                              <div className="flex items-center gap-6 mt-2 text-sm text-muted-foreground">
+                                <span className="flex items-center gap-1">
+                                  <Eye className="h-4 w-4" />
+                                  {stats.views} views
+                                </span>
+                                <span className="flex items-center gap-1">
+                                  <Heart className="h-4 w-4" />
+                                  {stats.interest} interested
+                                </span>
+                                <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
+                                  {stats.views > 0 ? `${Math.round((stats.interest / stats.views) * 100)}%` : '0%'} conversion rate
+                                </span>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </>
               )}
             </TabsContent>
 
