@@ -20,6 +20,7 @@ const AddPropertyForm = ({ onSuccess }: { onSuccess?: () => void }) => {
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [available, setAvailable] = useState(true);
+  const [userProfile, setUserProfile] = useState<any>(null);
   
   const [formData, setFormData] = useState({
     title: "",
@@ -91,6 +92,79 @@ const AddPropertyForm = ({ onSuccess }: { onSuccess?: () => void }) => {
         });
         navigate("/auth");
         return;
+      }
+
+      // Check if user has an active subscription plan that allows property listing
+      const { data: profile } = await (supabase as any)
+        .from("profiles")
+        .select("subscription_plan, subscription_status")
+        .eq("id", user.id)
+        .single();
+
+      if (!profile) {
+        toast({
+          title: "Profile not found",
+          description: "Please complete your profile setup",
+          variant: "destructive",
+        });
+        navigate("/settings");
+        return;
+      }
+
+      // Check subscription plan
+      const { subscription_plan, subscription_status } = profile;
+
+      if (!subscription_plan || subscription_plan === "free") {
+        toast({
+          title: "Subscription required",
+          description: "Please choose a plan to list properties",
+          variant: "destructive",
+        });
+        navigate("/plans");
+        return;
+      }
+
+      if (subscription_status !== "active") {
+        toast({
+          title: "Subscription inactive",
+          description: "Please activate your subscription to list properties",
+          variant: "destructive",
+        });
+        navigate("/plans");
+        return;
+      }
+
+      // Check property limits based on plan
+      if (subscription_plan === "basic") {
+        const { data: existingProperties } = await (supabase as any)
+          .from("properties")
+          .select("id")
+          .eq("landlord_id", user.id);
+
+        if (existingProperties && existingProperties.length >= 5) {
+          toast({
+            title: "Property limit reached",
+            description: "Basic plan allows up to 5 properties. Upgrade to Standard or Premium for more properties.",
+            variant: "destructive",
+          });
+          navigate("/plans");
+          return;
+        }
+      } else if (subscription_plan === "standard") {
+        const { data: existingProperties } = await (supabase as any)
+          .from("properties")
+          .select("id")
+          .eq("landlord_id", user.id);
+
+        if (existingProperties && existingProperties.length >= 20) {
+          toast({
+            title: "Property limit reached",
+            description: "Standard plan allows up to 20 properties. Upgrade to Premium for unlimited properties.",
+            variant: "destructive",
+          });
+          navigate("/plans");
+          return;
+        }
       }
 
       // Upload images to storage

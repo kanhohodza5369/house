@@ -40,14 +40,14 @@ const Dashboard = () => {
 
   const checkAuth = async () => {
     const { data: { user } } = await supabase.auth.getUser();
-    
+
     if (!user) {
       navigate("/auth");
       return;
     }
 
     setUser(user);
-    
+
     // Get profile
     const { data: profileData } = await (supabase as any)
       .from("profiles")
@@ -57,12 +57,12 @@ const Dashboard = () => {
 
     setProfile(profileData);
 
-    // Get properties and analytics if landlord
+    // Get properties and analytics if landlord (don't block access to dashboard)
     if (profileData && (profileData as any).user_type === "landlord") {
       fetchProperties(user.id);
       fetchAnalytics(user.id);
     }
-    
+
     setLoading(false);
   };
 
@@ -573,11 +573,25 @@ const Dashboard = () => {
             </TabsContent>
 
             <TabsContent value="add">
-              <AddPropertyForm onSuccess={() => {
-                setActiveTab("properties");
-                fetchProperties(user.id);
-                fetchAnalytics(user.id);
-              }} />
+              {profile?.subscription_plan && profile?.subscription_plan !== "free" && profile?.subscription_status === "active" ? (
+                <AddPropertyForm onSuccess={() => {
+                  setActiveTab("properties");
+                  fetchProperties(user.id);
+                  fetchAnalytics(user.id);
+                }} />
+              ) : (
+                <Card>
+                  <CardContent className="p-12 text-center">
+                    <h3 className="text-xl font-semibold mb-4">Subscription Required</h3>
+                    <p className="text-muted-foreground mb-6">
+                      To list properties on our platform, you need an active subscription plan.
+                    </p>
+                    <Button onClick={() => navigate("/plans")}>
+                      Choose a Plan
+                    </Button>
+                  </CardContent>
+                </Card>
+              )}
             </TabsContent>
           </Tabs>
         ) : (
